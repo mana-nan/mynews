@@ -15,10 +15,16 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::group (['prefix' => 'admin'], function() {
-    Route::get ('news/create', 'Admin\NewsController@add')->middleware('auth');
-    Route::get('profile/create', 'Admin\Profilecontroller@add')->middleware('auth');
-    Route::get('profile/edit', 'Admin\Profilecontroller@edit')->middleware('auth');
+Route::group (['prefix' => 'admin', 'middleware' => 'auth'], function() {
+    //左 に〜〜メソッドでアクセスしたら、右のcontrollerの@アクションに割り当てる
+    Route::get ('news/create', 'Admin\NewsController@add');
+    Route::post('news/create', 'Admin/NewsController@create');
+    
+    Route::get('profile/create', 'Admin\Profilecontroller@add');
+    Route:: post('profile/create', 'Admin\Profilecontroller@create');
+    
+    Route::get('profile/edit', 'Admin\Profilecontroller@edit');
+    Route::post('profile/edit', 'Admin\Profilecontroller@update');
 });
 
 
