@@ -18,7 +18,7 @@ Route::get('/', function () {
 Route::group (['prefix' => 'admin', 'middleware' => 'auth'], function() {
     //左 に〜〜メソッドでアクセスしたら、右のcontrollerの@アクションに割り当てる
     Route::get ('news/create', 'Admin\NewsController@add');
-    Route::post('news/create', 'Admin/NewsController@create');
+    Route::post('news/create', 'Admin\NewsController@create');
     
     Route::get('profile/create', 'Admin\Profilecontroller@add');
     Route:: post('profile/create', 'Admin\Profilecontroller@create');
