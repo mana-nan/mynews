@@ -9,11 +9,9 @@ use App\News;
 
 class NewsController extends Controller
 {
-    //
-    
-    
     public function add()
     {
+        //views/admin/news/create.blade.phpの内容表示
         return view ('admin.news.create');
     }
     
@@ -37,14 +35,62 @@ class NewsController extends Controller
         unset($form['_token']);
         unset($form['image']);
         
+        // データベースに保存する
         $news->fill($form);
         $news->save();
         
-        //admin/news/createにリダイレクトする
+        //admin/news/create.blade.phpにリダイレクトする
         return redirect('admin/news/create');
     }
     
+    public function index(Request $request)
+    {
+        $cond_title = $request->cond_title;
+        if ($cond_title != ''){
+            //Modelに対しWhereメソッド指定して検索
+            //検索されたら検索結果（ニューステーブルの中のタイトルカラム）取得
+            $posts = News::where('title', $cond_title)->get();
+        } else {
+            //それ以外は全てのニュース(newsテーブルのレコード全て)を取得
+            $posts = News::all();
+        }
+        return view('admin.news.index', ['posts' => $posts, 'cond_title' => $cond_title]);
+    }
     
+    public function edit(Request $request)
+    {
+        //News Modelからデータを取得する
+        $news = News::find($request->id);
+        if (empty($news)) {
+            abort(404);
+        }
+        return view('admin.news.edit', ['news_form' => $news]);
+    }
     
+    public function update(Request $request)
+    {
+        //validationかける
+        $this->validate($request, News::$rules);
+        //News Model からデータを取得
+        $news = news::find($request->id);
+        //送信されてきたフォームデータを格納
+        $news_form - $request->all();
+        
+        if (isset($news_form['image'])){
+            $path = $request->file('image')->store('public/image');
+            $news->image_path = basename($path);
+            unset($news_form['image']);
+        } elseif (isset($request->remove)) {
+            $news->image_path = null;
+            unset($news_form['remove']);
+        }
+        
+        unset($news_form['_token']);
+        
+        //該当するデータを上書きして保存
+        $news->fill($news_form)->save();
+        
+        return redirect('admin/news');
+    }
 }
 

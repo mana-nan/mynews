@@ -6,7 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class News extends Model
 {
-    protected $guard = array('id');
+    protected $guarded = array('id');
+    protected $fillable = array('title');
     //
     public static $rules = array(
         'title' => 'required',
