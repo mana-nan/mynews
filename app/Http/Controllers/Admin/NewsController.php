@@ -74,7 +74,7 @@ class NewsController extends Controller
         //News Model からデータを取得
         $news = news::find($request->id);
         //送信されてきたフォームデータを格納
-        $news_form - $request->all();
+        $news_form = $request->all();
         
         if (isset($news_form['image'])){
             $path = $request->file('image')->store('public/image');
