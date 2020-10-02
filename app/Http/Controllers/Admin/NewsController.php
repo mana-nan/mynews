@@ -72,17 +72,28 @@ class NewsController extends Controller
         //validationかける
         $this->validate($request, News::$rules);
         //News Model からデータを取得
-        $news = news::find($request->id);
+        $news = News::find($request->id);
         //送信されてきたフォームデータを格納
         $news_form = $request->all();
         
-        if (isset($news_form['image'])){
+       /*修正前のコード
+       if (isset($news_form['image'])){
             $path = $request->file('image')->store('public/image');
             $news->image_path = basename($path);
             unset($news_form['image']);
         } elseif (isset($request->remove)) {
             $news->image_path = null;
             unset($news_form['remove']);
+        }*/
+        
+        //修正後のコード
+        if ($request->remove == 'true') {
+            $news_form['image_path'] = null;
+        } elseif ($request->file('image')) {
+            $path = $request->file('image')->store('public/image');
+            $news_form['image_path'] = basename($path);
+        } else {
+            $news_form['image_path'] = $news->image_path;
         }
         
         unset($news_form['_token']);
