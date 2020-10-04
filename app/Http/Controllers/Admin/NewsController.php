@@ -103,5 +103,14 @@ class NewsController extends Controller
         
         return redirect('admin/news');
     }
+    
+    public function delete (Request $request)
+    {
+        //該当するニュースモデルを取得
+        $news = News::find($request->id);
+        //削除
+        $news->delete();
+        return redirect('admin/news/');
+    }
 }
 

@@ -7,7 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class Profile extends Model
 {
     //$guardedに指定したカラムのみ、create()やfill()、update()で値が代入されない
-    protected $guard = array('id');
+    protected $guarded = array('id');
+    protected $fillable = array('name', 'gender', 'hobby', 'introduction');
     
     //validation
     public static $rules = array(
