@@ -18,4 +18,9 @@ class Profile extends Model
         'introduction'=>'required',
     );
     
+    public function prohistories()
+    {
+        //HasManyでProHIstoryモデルから複数データ取得
+        return $this->hasMany('App\ProHistory');
+    }
 }

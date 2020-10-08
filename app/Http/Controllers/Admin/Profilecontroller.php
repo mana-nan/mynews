@@ -7,6 +7,10 @@ use App\Http\Controllers\Controller;
 
 use App\Profile;
 
+use App\ProHistory;
+
+use Carbon\Carbon;
+
 class Profilecontroller extends Controller
 {
     //
@@ -32,6 +36,17 @@ class Profilecontroller extends Controller
         return redirect('admin/profile/create');
     }
     
+    public function index(Request $request)
+    {
+        $cond_name = $request->cond_name;
+        if($cond_name != ''){
+            $posts = Profile::where('name', $cond_name)->get();
+        } else { 
+            $posts = Profile::all();
+        }
+        return view('admin.profile.index', ['posts' => $posts, 'cond_name' => $cond_name]);
+    }
+    
     public function edit(Request $request)
     {
         $profile = Profile::find($request->id);
@@ -41,7 +56,7 @@ class Profilecontroller extends Controller
         return view('admin.profile.edit', ['profile_form' => $profile]);
     }
     
-    public function update(Rrequest $request)
+    public function update(Request $request)
     {
         //validationをかける
         $this->validate($request, Profile::$rules);
@@ -54,6 +69,12 @@ class Profilecontroller extends Controller
         
         //該当するデータを上書き保存
         $profile->fill($profile_form)->save();
+        
+        //ProHistory Modelに編集履歴追加
+        $prohistory = new ProHistory;
+        $prohistory->profile_id = $profile->id;
+        $prohistory->edited_at = Carbon::now();
+        $prohistory->save();
         
         //これ違うっぽい、何でだ
         //return redirect('admin/profile/edit');
