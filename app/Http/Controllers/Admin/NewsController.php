@@ -96,6 +96,7 @@ class NewsController extends Controller
         } elseif ($request->file('image')) {
             $path = $request->file('image')->store('public/image');
             $news_form['image_path'] = basename($path);
+            $news->image_path = $news_form['image_path'];
         } else {
             $news_form['image_path'] = $news->image_path;
         }
